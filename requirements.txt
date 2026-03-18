@@ -1,0 +1,9 @@
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+pydantic==2.11.7
+httpx==0.28.1
+pandas==2.3.2
+numpy==2.3.2
+scikit-learn==1.7.1
+yfinance==0.2.65
+plotly==6.3.0
