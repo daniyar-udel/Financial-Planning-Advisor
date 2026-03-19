@@ -7,3 +7,4 @@ numpy==2.3.2
 scikit-learn==1.7.1
 yfinance==0.2.65
 plotly==6.3.0
+streamlit==1.49.0

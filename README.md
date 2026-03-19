@@ -207,6 +207,12 @@ uvicorn app.main:app --reload
 
 Open the interactive API docs at `http://127.0.0.1:8000/docs`.
 
+To run the dashboard:
+
+```bash
+streamlit run dashboard.py
+```
+
 ## Example Request
 
 ```json

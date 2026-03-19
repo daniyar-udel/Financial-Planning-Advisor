@@ -33,6 +33,13 @@ class MarketSnapshot(BaseModel):
     as_of: str
 
 
+class ProjectionPoint(BaseModel):
+    year: int
+    pessimistic_value: float
+    median_value: float
+    optimistic_value: float
+
+
 class SimulationSummary(BaseModel):
     probability_of_reaching_goal: float
     median_terminal_value: float
@@ -40,6 +47,7 @@ class SimulationSummary(BaseModel):
     optimistic_terminal_value: float
     expected_annual_return: float
     annual_volatility: float
+    yearly_projection: list[ProjectionPoint]
 
 
 class AdvisorResponse(BaseModel):
