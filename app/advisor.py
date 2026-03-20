@@ -2,39 +2,41 @@ from app.explanation import build_explanation
 from app.market_regime import detect_market_regime
 from app.monte_carlo import run_goal_simulation
 from app.portfolio import (
-    adjust_portfolio_for_market_regime,
-    get_base_portfolio,
-    get_portfolio_assumptions,
+    build_base_strategy,
+    build_recommended_strategy,
 )
-from app.risk_profile import classify_risk_profile
+from app.risk_profile import determine_strategy_profile
 from app.schemas import AdvisorResponse, UserProfile
 
 
 def build_advice(profile: UserProfile) -> AdvisorResponse:
-    risk_profile = classify_risk_profile(profile)
-    base_portfolio = get_base_portfolio(risk_profile)
+    strategy_profile = determine_strategy_profile(profile)
+    base_strategy = build_base_strategy(strategy_profile)
     market_snapshot = detect_market_regime()
-    adjusted_portfolio = adjust_portfolio_for_market_regime(risk_profile, market_snapshot.regime)
-    expected_return, annual_volatility = get_portfolio_assumptions(
-        risk_profile,
+    recommended_strategy = build_recommended_strategy(
+        strategy_profile,
         market_snapshot.regime,
     )
-    simulation = run_goal_simulation(profile, expected_return, annual_volatility)
+    simulation = run_goal_simulation(
+        profile,
+        recommended_strategy.expected_annual_return,
+        recommended_strategy.annual_volatility,
+    )
     explanation = build_explanation(
-        risk_profile=risk_profile,
+        strategy_profile=strategy_profile,
         market_regime=market_snapshot.regime,
-        adjusted_portfolio=adjusted_portfolio,
+        recommended_allocation=recommended_strategy.allocation,
         simulation=simulation,
         goal_amount=profile.goal_amount,
         investment_horizon_years=profile.investment_horizon_years,
     )
 
     return AdvisorResponse(
-        risk_profile=risk_profile,
-        base_portfolio=base_portfolio,
+        strategy_profile=strategy_profile,
+        base_strategy=base_strategy,
         market_regime=market_snapshot.regime,
         market_snapshot=market_snapshot,
-        adjusted_portfolio=adjusted_portfolio,
+        recommended_strategy=recommended_strategy,
         simulation=simulation,
         explanation=explanation,
     )

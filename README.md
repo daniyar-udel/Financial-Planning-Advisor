@@ -1,14 +1,14 @@
-# AI Financial Planning Advisor
+# AI Investment Strategy Advisor
 
-An AI-powered financial planning assistant that helps users turn a financial goal into a realistic long-term investment strategy.
+An AI-powered investment planning system that helps users turn a financial goal into a realistic long-term portfolio strategy.
 
-Instead of predicting random stock prices, the system focuses on a more practical problem: how a user should invest based on income, savings behavior, risk tolerance, time horizon, and current market conditions.
+Instead of predicting random stock prices, the system focuses on a more practical problem: how a user should invest based on income, savings behavior, risk preference, time horizon, and current market conditions.
 
 ## Recruiter Snapshot
 
 This project is designed to showcase:
 
-- applied ML for user risk profiling and market regime analysis
+- applied AI/ML thinking for market-aware strategy generation
 - probabilistic financial modeling with Monte Carlo simulation
 - production-style backend engineering with FastAPI
 - product thinking for a realistic fintech AI use case
@@ -27,7 +27,7 @@ Most portfolio projects stop at either:
 This project is intentionally different. It is built as a realistic AI/ML system:
 
 - user financial profile intake
-- risk-based portfolio construction
+- goal-based portfolio construction
 - market regime detection
 - adaptive asset allocation
 - Monte Carlo portfolio simulation
@@ -51,8 +51,8 @@ The user enters:
 
 The system then:
 
-- classifies the user into a risk profile
-- generates a base portfolio
+- interprets the user's goals and risk preference
+- generates a base portfolio strategy
 - detects the current market regime
 - adjusts allocation to reflect market conditions
 - runs Monte Carlo simulations
@@ -77,7 +77,7 @@ The MVP focuses on:
 
 This repository demonstrates:
 
-- `ML thinking`: classification, clustering, probabilistic simulation
+- `ML thinking`: regime analysis and probabilistic simulation
 - `system design`: modular services instead of one notebook
 - `domain knowledge`: portfolio allocation, risk, regime-based adaptation
 - `backend skills`: API design, schemas, orchestration layer
@@ -132,13 +132,9 @@ app/
 
 ### 1. Risk Profiling
 
-The current MVP uses a transparent scoring-based classifier to map user characteristics into:
+The current MVP uses interpretable portfolio logic driven by the user's financial profile, goal, and risk preference.
 
-- conservative
-- moderate
-- aggressive
-
-This keeps the first version interpretable and easy to explain, while leaving room for a supervised model later.
+This keeps the first version product-focused and explainable, while leaving room for more advanced ML components later.
 
 ### 2. Market Regime Detection
 

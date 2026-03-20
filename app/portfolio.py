@@ -1,16 +1,22 @@
 from app.config import settings
-from app.schemas import MarketRegime, RiskProfile
+from app.schemas import AllocationSummary, MarketRegime, StrategyProfile
 
 
-def get_base_portfolio(risk_profile: RiskProfile) -> dict[str, float]:
-    return dict(settings.portfolio_presets[risk_profile].allocations)
+def build_base_strategy(strategy_profile: StrategyProfile) -> AllocationSummary:
+    preset = settings.portfolio_presets[strategy_profile]
+    return AllocationSummary(
+        strategy_profile=strategy_profile,
+        expected_annual_return=round(preset.expected_return, 4),
+        annual_volatility=round(preset.annual_volatility, 4),
+        allocation=dict(preset.allocations),
+    )
 
 
-def adjust_portfolio_for_market_regime(
-    risk_profile: RiskProfile,
+def build_recommended_strategy(
+    strategy_profile: StrategyProfile,
     market_regime: MarketRegime,
-) -> dict[str, float]:
-    base = get_base_portfolio(risk_profile)
+) -> AllocationSummary:
+    base = build_base_strategy(strategy_profile).allocation
     adjusted = dict(base)
 
     if market_regime == "bull":
@@ -28,14 +34,20 @@ def adjust_portfolio_for_market_regime(
         adjusted["reits"] = adjusted.get("reits", 0.0) + 0.05
         adjusted["stocks"] = max(adjusted.get("stocks", 0.0) - 0.05, 0.25)
 
-    return _normalize_allocations(adjusted)
+    expected_return, annual_volatility = get_strategy_assumptions(strategy_profile, market_regime)
+    return AllocationSummary(
+        strategy_profile=strategy_profile,
+        expected_annual_return=round(expected_return, 4),
+        annual_volatility=round(annual_volatility, 4),
+        allocation=_normalize_allocations(adjusted),
+    )
 
 
-def get_portfolio_assumptions(
-    risk_profile: RiskProfile,
+def get_strategy_assumptions(
+    strategy_profile: StrategyProfile,
     market_regime: MarketRegime,
 ) -> tuple[float, float]:
-    preset = settings.portfolio_presets[risk_profile]
+    preset = settings.portfolio_presets[strategy_profile]
     expected_return = preset.expected_return
     annual_volatility = preset.annual_volatility
 

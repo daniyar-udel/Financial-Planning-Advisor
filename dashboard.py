@@ -10,7 +10,7 @@ from app.schemas import UserProfile
 
 
 st.set_page_config(
-    page_title="AI Financial Planning Advisor",
+    page_title="AI Investment Strategy Advisor",
     page_icon="chart_with_upwards_trend",
     layout="wide",
 )
@@ -22,12 +22,12 @@ def main() -> None:
     st.markdown(
         """
         <div class="hero">
-          <div class="eyebrow">AI Financial Planning Advisor</div>
-          <h1>Turn a long-term financial goal into a realistic investment strategy.</h1>
+          <div class="eyebrow">AI Investment Strategy Advisor</div>
+          <h1>Turn a long-term financial goal into a market-aware portfolio strategy.</h1>
           <p>
-            This demo combines risk profiling, market regime detection, adaptive allocation,
-            and Monte Carlo simulation to help users understand how likely they are to reach
-            a target over time.
+            This demo combines client preferences, strategy generation, market regime detection,
+            adaptive allocation, and Monte Carlo simulation to help users understand how likely
+            they are to reach a target over time.
           </p>
         </div>
         """,
@@ -42,6 +42,7 @@ def main() -> None:
     with right:
         advice = build_advice(profile)
         _render_summary(advice)
+        _render_strategy_overview(advice)
         _render_charts(advice)
         _render_explanation(advice)
 
@@ -116,7 +117,7 @@ def _render_summary(advice) -> None:
     success_label = _probability_label(probability)
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Risk Profile", advice.risk_profile.replace("_", " ").title())
+    col1.metric("Strategy Profile", advice.strategy_profile.replace("_", " ").title())
     col2.metric("Market Regime", advice.market_regime.replace("_", " ").title())
     col3.metric("Goal Probability", f"{probability:.0%}")
     col4.metric("Median Outcome", _format_currency(advice.simulation.median_terminal_value))
@@ -132,6 +133,45 @@ def _render_summary(advice) -> None:
     )
 
 
+def _render_strategy_overview(advice) -> None:
+    st.markdown("### Why This Strategy")
+    left, right = st.columns([1.15, 0.85], gap="large")
+
+    with left:
+        regime_label = advice.market_regime.replace("_", " ").title()
+        strategy_label = advice.strategy_profile.title()
+        probability = advice.simulation.probability_of_reaching_goal
+        explanation_points = _strategy_reasoning(advice)
+
+        bullets = "".join(f"<li>{point}</li>" for point in explanation_points)
+        st.markdown(
+            f"""
+            <div class="strategy-card">
+              <div class="strategy-kicker">Recommended Strategy</div>
+              <h3>{strategy_label} allocation with {regime_label.lower()} market adjustment</h3>
+              <p>
+                The portfolio starts from your long-term preference profile, then adjusts exposure
+                based on the current market regime to balance growth and downside risk.
+              </p>
+              <ul>{bullets}</ul>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    with right:
+        st.markdown(
+            f"""
+            <div class="probability-panel">
+              <div class="probability-label">Probability Of Reaching Goal</div>
+              <div class="probability-value">{probability:.0%}</div>
+              <div class="probability-caption">{_probability_label(probability)}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
 def _render_charts(advice) -> None:
     allocation_col, projection_col = st.columns([0.95, 1.35], gap="large")
 
@@ -144,11 +184,15 @@ def _render_charts(advice) -> None:
             label_visibility="collapsed",
         )
         allocation = (
-            advice.adjusted_portfolio
+            advice.recommended_strategy.allocation
             if allocation_mode == "Adjusted allocation"
-            else advice.base_portfolio
+            else advice.base_strategy.allocation
         )
         st.plotly_chart(_allocation_chart(allocation), use_container_width=True)
+
+        comp1, comp2 = st.columns(2)
+        comp1.metric("Base Return", f"{advice.base_strategy.expected_annual_return:.1%}")
+        comp2.metric("Recommended Return", f"{advice.recommended_strategy.expected_annual_return:.1%}")
 
         snapshot = advice.market_snapshot
         st.markdown("### Market Snapshot")
@@ -167,6 +211,30 @@ def _render_charts(advice) -> None:
         p1.metric("P10 Outcome", _format_currency(sim.pessimistic_terminal_value))
         p2.metric("P50 Outcome", _format_currency(sim.median_terminal_value))
         p3.metric("P90 Outcome", _format_currency(sim.optimistic_terminal_value))
+
+        st.markdown("### Strategy Comparison")
+        comparison_df = pd.DataFrame(
+            [
+                {
+                    "Strategy": "Base",
+                    "Expected return": advice.base_strategy.expected_annual_return,
+                    "Volatility": advice.base_strategy.annual_volatility,
+                },
+                {
+                    "Strategy": "Recommended",
+                    "Expected return": advice.recommended_strategy.expected_annual_return,
+                    "Volatility": advice.recommended_strategy.annual_volatility,
+                },
+            ]
+        )
+        comparison_df["Expected return"] = comparison_df["Expected return"].map(lambda x: f"{x:.1%}")
+        comparison_df["Volatility"] = comparison_df["Volatility"].map(lambda x: f"{x:.1%}")
+        st.dataframe(comparison_df, use_container_width=True, hide_index=True)
+
+        gap = advice.recommended_strategy.expected_annual_return - advice.base_strategy.expected_annual_return
+        st.caption(
+            f"Market-aware adjustment changed expected annual return by {gap:+.1%} versus the base strategy."
+        )
 
 
 def _render_explanation(advice) -> None:
@@ -275,6 +343,29 @@ def _probability_label(probability: float) -> str:
     return "This goal may require a higher savings rate, longer horizon, or more aggressive allocation"
 
 
+def _strategy_reasoning(advice) -> list[str]:
+    points = [
+        f"Base strategy profile: {advice.strategy_profile.title()}",
+        f"Current market regime: {advice.market_regime.replace('_', ' ').title()}",
+        f"Recommended allocation emphasizes {', '.join(_top_assets(advice.recommended_strategy.allocation))}",
+    ]
+
+    probability = advice.simulation.probability_of_reaching_goal
+    if probability < 0.6:
+        points.append("The current plan may need stronger monthly contributions or a longer horizon to improve success odds.")
+    elif probability < 0.8:
+        points.append("The plan is credible, though long-term outcomes still depend on market uncertainty and saving consistency.")
+    else:
+        points.append("The current profile and contribution pattern produce a strong long-term probability of success.")
+
+    return points
+
+
+def _top_assets(allocation: dict[str, float]) -> list[str]:
+    ranked = sorted(allocation.items(), key=lambda item: item[1], reverse=True)
+    return [asset.replace("_", " ") for asset, _ in ranked[:2]]
+
+
 def _format_currency(value: float) -> str:
     return f"${value:,.0f}"
 
@@ -322,6 +413,62 @@ def _inject_styles() -> None:
             border: 1px solid rgba(15, 23, 42, 0.08);
             background: rgba(255, 255, 255, 0.9);
             color: #0f172a;
+        }
+        .strategy-card, .probability-panel {
+            border-radius: 22px;
+            padding: 1.15rem 1.2rem;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            background: rgba(255, 255, 255, 0.92);
+            color: #0f172a;
+            min-height: 220px;
+        }
+        .strategy-card h3 {
+            margin: 0.2rem 0 0.6rem 0;
+            font-size: 1.25rem;
+            color: #0f172a;
+        }
+        .strategy-card p {
+            margin: 0 0 0.85rem 0;
+            color: #334155;
+        }
+        .strategy-card ul {
+            margin: 0;
+            padding-left: 1.1rem;
+            color: #0f172a;
+        }
+        .strategy-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.72rem;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+        .probability-panel {
+            background:
+                linear-gradient(180deg, rgba(15, 118, 110, 0.96) 0%, rgba(13, 148, 136, 0.92) 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .probability-label {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.72rem;
+            opacity: 0.85;
+            font-weight: 700;
+        }
+        .probability-value {
+            font-size: 3.2rem;
+            line-height: 1;
+            margin: 0.45rem 0 0.55rem 0;
+            font-weight: 800;
+        }
+        .probability-caption {
+            font-size: 1rem;
+            line-height: 1.5;
+            max-width: 18rem;
+            opacity: 0.95;
         }
         .narrative-card {
             font-size: 1rem;

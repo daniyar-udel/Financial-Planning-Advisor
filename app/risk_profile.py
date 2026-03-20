@@ -1,7 +1,7 @@
-from app.schemas import RiskProfile, UserProfile
+from app.schemas import StrategyProfile, UserProfile
 
 
-def classify_risk_profile(profile: UserProfile) -> RiskProfile:
+def determine_strategy_profile(profile: UserProfile) -> StrategyProfile:
     score = 0
 
     if profile.investment_horizon_years >= 20:

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, computed_field
 
 
 RiskPreference = Literal["low", "medium", "high"]
-RiskProfile = Literal["conservative", "moderate", "aggressive"]
+StrategyProfile = Literal["conservative", "moderate", "aggressive"]
 MarketRegime = Literal["bull", "bear", "sideways", "high_volatility"]
 
 
@@ -40,6 +40,13 @@ class ProjectionPoint(BaseModel):
     optimistic_value: float
 
 
+class AllocationSummary(BaseModel):
+    strategy_profile: StrategyProfile
+    expected_annual_return: float
+    annual_volatility: float
+    allocation: dict[str, float]
+
+
 class SimulationSummary(BaseModel):
     probability_of_reaching_goal: float
     median_terminal_value: float
@@ -51,10 +58,10 @@ class SimulationSummary(BaseModel):
 
 
 class AdvisorResponse(BaseModel):
-    risk_profile: RiskProfile
-    base_portfolio: dict[str, float]
+    strategy_profile: StrategyProfile
+    base_strategy: AllocationSummary
     market_regime: MarketRegime
     market_snapshot: MarketSnapshot
-    adjusted_portfolio: dict[str, float]
+    recommended_strategy: AllocationSummary
     simulation: SimulationSummary
     explanation: str
