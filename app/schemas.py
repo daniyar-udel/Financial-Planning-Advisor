@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, EmailStr, Field, computed_field
 
 
 RiskPreference = Literal["low", "medium", "high"]
@@ -22,6 +22,29 @@ class UserProfile(BaseModel):
     @property
     def monthly_income(self) -> float:
         return self.annual_income / 12
+
+
+class SignupRequest(BaseModel):
+    full_name: str = Field(..., min_length=2, max_length=120)
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=128)
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=128)
+
+
+class UserResponse(BaseModel):
+    id: int
+    full_name: str
+    email: EmailStr
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
 
 
 class MarketSnapshot(BaseModel):

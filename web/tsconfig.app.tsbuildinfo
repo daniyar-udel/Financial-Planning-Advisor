@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/mockdata.ts","./src/types.ts","./src/vite-env.d.ts"],"version":"5.9.3"}
+{"root":["./src/app.tsx","./src/api.ts","./src/auth.tsx","./src/main.tsx","./src/mockdata.ts","./src/types.ts","./src/vite-env.d.ts","./src/pages/dashboardpage.tsx","./src/pages/investpage.tsx","./src/pages/loginpage.tsx","./src/pages/signuppage.tsx"],"version":"5.9.3"}

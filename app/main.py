@@ -1,8 +1,17 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth import get_current_user, login_user, register_user
 from app.advisor import build_advice
-from app.schemas import AdvisorResponse, UserProfile
+from app.database import init_db
+from app.schemas import (
+    AdvisorResponse,
+    LoginRequest,
+    SignupRequest,
+    TokenResponse,
+    UserProfile,
+    UserResponse,
+)
 
 app = FastAPI(
     title="AI Investment Strategy Advisor",
@@ -18,6 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+init_db()
+
 
 @app.get("/health")
 def healthcheck() -> dict[str, str]:
@@ -31,6 +42,21 @@ def root() -> dict[str, str]:
         "docs": "/docs",
         "health": "/health",
     }
+
+
+@app.post("/auth/signup", response_model=TokenResponse)
+def signup(payload: SignupRequest) -> TokenResponse:
+    return register_user(payload)
+
+
+@app.post("/auth/login", response_model=TokenResponse)
+def login(payload: LoginRequest) -> TokenResponse:
+    return login_user(payload)
+
+
+@app.get("/auth/me", response_model=UserResponse)
+def me(current_user: UserResponse = Depends(get_current_user)) -> UserResponse:
+    return current_user
 
 
 @app.post("/advisor/plan", response_model=AdvisorResponse)
