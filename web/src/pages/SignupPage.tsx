@@ -19,7 +19,7 @@ export default function SignupPage() {
 
     try {
       await signupUser({ full_name: fullName, email, password });
-      navigate("/app");
+      navigate("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create account.");
     } finally {

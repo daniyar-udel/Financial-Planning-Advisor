@@ -28,3 +28,26 @@ def init_db() -> None:
             )
             """
         )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS onboarding_profiles (
+                user_id INTEGER PRIMARY KEY,
+                goal_type TEXT NOT NULL,
+                goal_amount REAL NOT NULL,
+                investment_horizon_years INTEGER NOT NULL,
+                age INTEGER NOT NULL,
+                date_of_birth TEXT NOT NULL,
+                marital_status TEXT NOT NULL,
+                address TEXT NOT NULL,
+                annual_income REAL NOT NULL,
+                current_savings REAL NOT NULL,
+                monthly_contribution REAL NOT NULL,
+                savings_rate REAL NOT NULL,
+                risk_preference TEXT NOT NULL,
+                stress_response TEXT NOT NULL,
+                strategy_preference TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+            """
+        )

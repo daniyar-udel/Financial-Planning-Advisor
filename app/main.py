@@ -4,9 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.auth import get_current_user, login_user, register_user
 from app.advisor import build_advice
 from app.database import init_db
+from app.onboarding import get_onboarding_profile, save_onboarding_profile
 from app.schemas import (
     AdvisorResponse,
     LoginRequest,
+    OnboardingProfileRequest,
+    OnboardingProfileResponse,
     SignupRequest,
     TokenResponse,
     UserProfile,
@@ -57,6 +60,21 @@ def login(payload: LoginRequest) -> TokenResponse:
 @app.get("/auth/me", response_model=UserResponse)
 def me(current_user: UserResponse = Depends(get_current_user)) -> UserResponse:
     return current_user
+
+
+@app.get("/onboarding/profile", response_model=OnboardingProfileResponse)
+def get_saved_onboarding(
+    current_user: UserResponse = Depends(get_current_user),
+) -> OnboardingProfileResponse:
+    return get_onboarding_profile(current_user)
+
+
+@app.post("/onboarding/profile", response_model=OnboardingProfileResponse)
+def save_onboarding(
+    payload: OnboardingProfileRequest,
+    current_user: UserResponse = Depends(get_current_user),
+) -> OnboardingProfileResponse:
+    return save_onboarding_profile(current_user, payload)
 
 
 @app.post("/advisor/plan", response_model=AdvisorResponse)

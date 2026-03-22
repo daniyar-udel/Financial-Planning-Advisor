@@ -1,6 +1,14 @@
 export type RiskPreference = "low" | "medium" | "high";
 export type StrategyProfile = "conservative" | "moderate" | "aggressive";
 export type MarketRegime = "bull" | "bear" | "sideways" | "high_volatility";
+export type GoalType =
+  | "long_term_wealth"
+  | "retirement"
+  | "home_purchase"
+  | "financial_independence"
+  | "custom_goal";
+export type StressResponse = "buy_more" | "hold" | "sell_some" | "sell_all";
+export type StrategyPreference = "classic" | "responsible" | "income_focused";
 
 export interface SignupPayload {
   full_name: string;
@@ -23,6 +31,27 @@ export interface AuthResponse {
   access_token: string;
   token_type: string;
   user: User;
+}
+
+export interface OnboardingProfilePayload {
+  goal_type: GoalType;
+  goal_amount: number;
+  investment_horizon_years: number;
+  age: number;
+  date_of_birth: string;
+  marital_status: string;
+  address: string;
+  annual_income: number;
+  current_savings: number;
+  monthly_contribution: number;
+  savings_rate: number;
+  risk_preference: RiskPreference;
+  stress_response: StressResponse;
+  strategy_preference: StrategyPreference;
+}
+
+export interface OnboardingProfileResponse extends OnboardingProfilePayload {
+  user_id: number;
 }
 
 export interface UserProfilePayload {

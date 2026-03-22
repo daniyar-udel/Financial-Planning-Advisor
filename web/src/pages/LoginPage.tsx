@@ -18,7 +18,7 @@ export default function LoginPage() {
 
     try {
       await loginUser({ email, password });
-      navigate("/app");
+      navigate("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to log in.");
     } finally {

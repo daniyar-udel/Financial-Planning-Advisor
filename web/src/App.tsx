@@ -4,6 +4,7 @@ import { useAuth } from "./auth";
 import DashboardPage from "./pages/DashboardPage";
 import InvestPage from "./pages/InvestPage";
 import LoginPage from "./pages/LoginPage";
+import OnboardingPage from "./pages/OnboardingPage";
 import SignupPage from "./pages/SignupPage";
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route element={<ProtectedRoute />}>
+        <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/app" element={<DashboardPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/invest" replace />} />

@@ -6,6 +6,15 @@ from pydantic import BaseModel, EmailStr, Field, computed_field
 RiskPreference = Literal["low", "medium", "high"]
 StrategyProfile = Literal["conservative", "moderate", "aggressive"]
 MarketRegime = Literal["bull", "bear", "sideways", "high_volatility"]
+GoalType = Literal[
+    "long_term_wealth",
+    "retirement",
+    "home_purchase",
+    "financial_independence",
+    "custom_goal",
+]
+StressResponse = Literal["buy_more", "hold", "sell_some", "sell_all"]
+StrategyPreference = Literal["classic", "responsible", "income_focused"]
 
 
 class UserProfile(BaseModel):
@@ -45,6 +54,27 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class OnboardingProfileRequest(BaseModel):
+    goal_type: GoalType
+    goal_amount: float = Field(..., gt=0)
+    investment_horizon_years: int = Field(..., ge=1, le=50)
+    age: int = Field(..., ge=18, le=100)
+    date_of_birth: str = Field(..., min_length=8, max_length=20)
+    marital_status: str = Field(..., min_length=2, max_length=40)
+    address: str = Field(..., min_length=5, max_length=200)
+    annual_income: float = Field(..., gt=0)
+    current_savings: float = Field(..., ge=0)
+    monthly_contribution: float = Field(..., ge=0)
+    savings_rate: float = Field(..., ge=0, le=1)
+    risk_preference: RiskPreference
+    stress_response: StressResponse
+    strategy_preference: StrategyPreference
+
+
+class OnboardingProfileResponse(OnboardingProfileRequest):
+    user_id: int
 
 
 class MarketSnapshot(BaseModel):

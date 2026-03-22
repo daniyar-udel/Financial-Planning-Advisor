@@ -2,6 +2,8 @@ import type {
   AdvisorResponse,
   AuthResponse,
   LoginPayload,
+  OnboardingProfilePayload,
+  OnboardingProfileResponse,
   SignupPayload,
   User,
   UserProfilePayload,
@@ -73,4 +75,45 @@ export async function getCurrentUser(token: string): Promise<User> {
   }
 
   return response.json() as Promise<User>;
+}
+
+export async function getOnboardingProfile(
+  token: string,
+): Promise<OnboardingProfileResponse | null> {
+  const response = await fetch(`${API_BASE_URL}/onboarding/profile`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Unable to load onboarding profile.");
+  }
+
+  return response.json() as Promise<OnboardingProfileResponse>;
+}
+
+export async function saveOnboardingProfile(
+  token: string,
+  payload: OnboardingProfilePayload,
+): Promise<OnboardingProfileResponse> {
+  const response = await fetch(`${API_BASE_URL}/onboarding/profile`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    throw new Error(error?.detail ?? "Unable to save onboarding profile.");
+  }
+
+  return response.json() as Promise<OnboardingProfileResponse>;
 }
