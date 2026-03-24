@@ -70,7 +70,7 @@ export default function StrategyResultPage() {
             <SummaryItem label="Portfolio type" value={profile.strategy_preference.replace(/_/g, " ")} />
             <SummaryItem label="Risk preference" value={profile.risk_preference} />
             <SummaryItem label="Market regime" value={recommendation.market_regime.replace(/_/g, " ")} />
-            <SummaryItem label="Estimated amount accumulated" value={accumulatedLabel} />
+            <SummaryItem label="What you'll likely accumulate" value={accumulatedLabel} />
           </div>
         </div>
 
@@ -78,22 +78,22 @@ export default function StrategyResultPage() {
           <h2>Goal feasibility</h2>
           <div className="result-feasibility-grid">
             <SummaryItem
-              label="Estimated amount accumulated"
+              label="What you'll likely accumulate"
               value={accumulatedLabel}
             />
-            <SummaryItem label="Still left to reach the goal" value={remainingLabel} />
+            <SummaryItem label="What may still be missing by your target date" value={remainingLabel} />
             <SummaryItem
-              label="Monthly contribution for 80% success"
+              label="To improve your odds, invest about"
               value={`$${simulation.required_monthly_contribution_for_80_percent_success.toLocaleString()}`}
             />
             <SummaryItem
-              label="Current monthly contribution"
+              label="You're currently investing"
               value={`$${profile.monthly_contribution.toLocaleString()}`}
             />
           </div>
           <p className="result-note">
-            The accumulated amount is based on the median simulation outcome. If it is still below your target,
-            the remaining gap shows how much would still be missing by the end of the selected horizon.
+            These numbers are based on the median simulated outcome. If the projected amount is still below your target,
+            the remaining gap shows what may still be missing by your target date.
           </p>
         </section>
 

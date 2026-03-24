@@ -197,7 +197,7 @@ export default function DashboardPage() {
               accent
             />
             <MetricCard
-              label="Estimated amount accumulated"
+              label="What you'll likely accumulate"
               value={currencyFormatter.format(advice.simulation.median_terminal_value)}
             />
           </div>
@@ -219,11 +219,11 @@ export default function DashboardPage() {
               </ul>
               <div className="dashboard-goal-metrics">
                 <div className="dashboard-goal-metric">
-                  <span>Estimated amount accumulated</span>
+                  <span>What you'll likely accumulate</span>
                   <strong>{currencyFormatter.format(advice.simulation.median_terminal_value)}</strong>
                 </div>
                 <div className="dashboard-goal-metric">
-                  <span>Still left to reach the goal</span>
+                  <span>What may still be missing by your target date</span>
                   <strong>
                     {medianGap >= 0
                       ? `+$${Math.round(medianGap).toLocaleString()} above target`
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                   </strong>
                 </div>
                 <div className="dashboard-goal-metric">
-                  <span>Monthly contribution for 80% success</span>
+                  <span>To improve your odds, invest about</span>
                   <strong>
                     ${Math.round(
                       advice.simulation.required_monthly_contribution_for_80_percent_success,

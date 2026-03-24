@@ -36,6 +36,123 @@ select {
   position: relative;
 }
 
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  padding: 24px;
+}
+
+.app-sidebar,
+.app-panel,
+.app-page-header {
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.app-sidebar {
+  border-radius: 28px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  position: sticky;
+  top: 24px;
+  height: calc(100vh - 48px);
+}
+
+.app-sidebar h2 {
+  margin: 8px 0 10px;
+  font-size: 1.5rem;
+}
+
+.app-sidebar p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.app-nav {
+  display: grid;
+  gap: 10px;
+}
+
+.app-nav-link {
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #334155;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.app-nav-link:hover {
+  background: rgba(226, 232, 240, 0.55);
+}
+
+.app-nav-link-active {
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(15, 98, 254, 0.12));
+  color: #0f172a;
+}
+
+.app-sidebar-footer {
+  display: grid;
+  gap: 14px;
+}
+
+.app-shell-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.app-content {
+  display: grid;
+}
+
+.app-page {
+  display: grid;
+  gap: 24px;
+}
+
+.app-page-header,
+.app-panel {
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.app-page-header h1 {
+  margin: 10px 0 10px;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1;
+}
+
+.app-page-header p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.7;
+  max-width: 780px;
+}
+
+.app-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.app-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.summary-stack {
+  display: grid;
+  gap: 12px;
+}
+
 .background-orb {
   position: fixed;
   width: 420px;
@@ -914,15 +1031,23 @@ select {
 }
 
 @media (max-width: 1180px) {
+  .app-shell,
   .layout-grid,
   .hero-card,
   .insight-grid,
   .charts-grid,
   .bottom-grid,
   .metric-grid,
+  .app-metric-grid,
+  .app-two-column,
   .marketing-grid,
   .app-hero {
     grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    position: static;
+    height: auto;
   }
 
   .hero-actions {
@@ -932,6 +1057,10 @@ select {
 
 @media (max-width: 760px) {
   .page-shell {
+    padding: 18px;
+  }
+
+  .app-shell {
     padding: 18px;
   }
 
@@ -947,6 +1076,9 @@ select {
   .panel,
   .probability-card,
   .metric-card,
+  .app-sidebar,
+  .app-panel,
+  .app-page-header,
   .marketing-hero,
   .marketing-card,
   .auth-card,
