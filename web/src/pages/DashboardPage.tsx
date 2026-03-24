@@ -58,6 +58,7 @@ export default function DashboardPage() {
   );
 
   const probability = advice.simulation.probability_of_reaching_goal;
+  const medianGap = advice.simulation.median_goal_gap;
 
   return (
     <div className="page-shell">
@@ -196,7 +197,7 @@ export default function DashboardPage() {
               accent
             />
             <MetricCard
-              label="Median outcome"
+              label="Estimated amount accumulated"
               value={currencyFormatter.format(advice.simulation.median_terminal_value)}
             />
           </div>
@@ -216,6 +217,28 @@ export default function DashboardPage() {
                 <li>Adjusts exposure based on the current market regime.</li>
                 <li>Simulates many future paths to estimate goal feasibility.</li>
               </ul>
+              <div className="dashboard-goal-metrics">
+                <div className="dashboard-goal-metric">
+                  <span>Estimated amount accumulated</span>
+                  <strong>{currencyFormatter.format(advice.simulation.median_terminal_value)}</strong>
+                </div>
+                <div className="dashboard-goal-metric">
+                  <span>Still left to reach the goal</span>
+                  <strong>
+                    {medianGap >= 0
+                      ? `+$${Math.round(medianGap).toLocaleString()} above target`
+                      : `$${Math.round(Math.abs(medianGap)).toLocaleString()} left`}
+                  </strong>
+                </div>
+                <div className="dashboard-goal-metric">
+                  <span>Monthly contribution for 80% success</span>
+                  <strong>
+                    ${Math.round(
+                      advice.simulation.required_monthly_contribution_for_80_percent_success,
+                    ).toLocaleString()}
+                  </strong>
+                </div>
+              </div>
             </section>
 
             <section className="probability-card">

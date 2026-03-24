@@ -42,6 +42,12 @@ export default function StrategyResultPage() {
 
   const { recommendation, onboarding_profile: profile } = result;
   const allocationEntries = Object.entries(recommendation.recommended_strategy.allocation);
+  const simulation = recommendation.simulation;
+  const accumulatedLabel = `$${simulation.median_terminal_value.toLocaleString()}`;
+  const remainingLabel =
+    simulation.median_goal_gap >= 0
+      ? `+$${simulation.median_goal_gap.toLocaleString()} above target`
+      : `$${Math.abs(simulation.median_goal_gap).toLocaleString()} left to target`;
 
   return (
     <div className="result-shell">
@@ -56,7 +62,7 @@ export default function StrategyResultPage() {
         <div className="result-top-grid">
           <div className="result-hero-panel">
             <span>Goal probability</span>
-            <strong>{Math.round(recommendation.simulation.probability_of_reaching_goal * 100)}%</strong>
+            <strong>{Math.round(simulation.probability_of_reaching_goal * 100)}%</strong>
             <p>chance of reaching your target under simulated market outcomes</p>
           </div>
 
@@ -64,9 +70,32 @@ export default function StrategyResultPage() {
             <SummaryItem label="Portfolio type" value={profile.strategy_preference.replace(/_/g, " ")} />
             <SummaryItem label="Risk preference" value={profile.risk_preference} />
             <SummaryItem label="Market regime" value={recommendation.market_regime.replace(/_/g, " ")} />
-            <SummaryItem label="Median projected value" value={`$${recommendation.simulation.median_terminal_value.toLocaleString()}`} />
+            <SummaryItem label="Estimated amount accumulated" value={accumulatedLabel} />
           </div>
         </div>
+
+        <section className="result-section">
+          <h2>Goal feasibility</h2>
+          <div className="result-feasibility-grid">
+            <SummaryItem
+              label="Estimated amount accumulated"
+              value={accumulatedLabel}
+            />
+            <SummaryItem label="Still left to reach the goal" value={remainingLabel} />
+            <SummaryItem
+              label="Monthly contribution for 80% success"
+              value={`$${simulation.required_monthly_contribution_for_80_percent_success.toLocaleString()}`}
+            />
+            <SummaryItem
+              label="Current monthly contribution"
+              value={`$${profile.monthly_contribution.toLocaleString()}`}
+            />
+          </div>
+          <p className="result-note">
+            The accumulated amount is based on the median simulation outcome. If it is still below your target,
+            the remaining gap shows how much would still be missing by the end of the selected horizon.
+          </p>
+        </section>
 
         <section className="result-section">
           <h2>Recommended allocation</h2>

@@ -90,11 +90,14 @@ export interface ProjectionPoint {
 
 export interface SimulationSummary {
   probability_of_reaching_goal: number;
+  probability_of_reaching_90_percent_of_goal: number;
   median_terminal_value: number;
+  median_goal_gap: number;
   pessimistic_terminal_value: number;
   optimistic_terminal_value: number;
   expected_annual_return: number;
   annual_volatility: number;
+  required_monthly_contribution_for_80_percent_success: number;
   yearly_projection: ProjectionPoint[];
 }
 

@@ -44,11 +44,14 @@ export const mockAdvice: AdvisorResponse = {
   },
   simulation: {
     probability_of_reaching_goal: 0.64,
+    probability_of_reaching_90_percent_of_goal: 0.79,
     median_terminal_value: 587043.11,
+    median_goal_gap: 87043.11,
     pessimistic_terminal_value: 333123.14,
     optimistic_terminal_value: 1071379.14,
     expected_annual_return: 0.065,
     annual_volatility: 0.13,
+    required_monthly_contribution_for_80_percent_success: 980,
     yearly_projection: [
       { year: 1, pessimistic_value: 22421.55, median_value: 25789.54, optimistic_value: 29627.62 },
       { year: 5, pessimistic_value: 58585.68, median_value: 75510.65, optimistic_value: 98113.93 },

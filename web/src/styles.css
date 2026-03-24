@@ -584,6 +584,12 @@ select {
   gap: 14px;
 }
 
+.result-feasibility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .result-summary-item,
 .result-allocation-row {
   border-radius: 18px;
@@ -660,6 +666,31 @@ select {
   margin-top: 28px;
   display: flex;
   gap: 14px;
+}
+
+.dashboard-goal-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-goal-metric {
+  border-radius: 16px;
+  background: rgba(248, 250, 252, 0.95);
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.dashboard-goal-metric span {
+  color: #64748b;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.dashboard-goal-metric strong {
+  font-size: 1rem;
+  color: #0f172a;
 }
 
 @keyframes pulse-line {
@@ -946,7 +977,9 @@ select {
   .onboarding-grid,
   .review-grid,
   .result-top-grid,
-  .result-summary-list {
+  .result-summary-list,
+  .result-feasibility-grid,
+  .dashboard-goal-metrics {
     grid-template-columns: 1fr;
   }
 

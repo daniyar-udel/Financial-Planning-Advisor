@@ -110,11 +110,14 @@ class AllocationSummary(BaseModel):
 
 class SimulationSummary(BaseModel):
     probability_of_reaching_goal: float
+    probability_of_reaching_90_percent_of_goal: float
     median_terminal_value: float
+    median_goal_gap: float
     pessimistic_terminal_value: float
     optimistic_terminal_value: float
     expected_annual_return: float
     annual_volatility: float
+    required_monthly_contribution_for_80_percent_success: float
     yearly_projection: list[ProjectionPoint]
 
 
