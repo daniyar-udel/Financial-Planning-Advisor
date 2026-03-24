@@ -5,6 +5,7 @@ import type {
   OnboardingProfilePayload,
   OnboardingProfileResponse,
   SignupPayload,
+  StrategyResultResponse,
   User,
   UserProfilePayload,
 } from "./types";
@@ -116,4 +117,19 @@ export async function saveOnboardingProfile(
   }
 
   return response.json() as Promise<OnboardingProfileResponse>;
+}
+
+export async function getStrategyResult(token: string): Promise<StrategyResultResponse> {
+  const response = await fetch(`${API_BASE_URL}/strategy/result`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    throw new Error(error?.detail ?? "Unable to build strategy result.");
+  }
+
+  return response.json() as Promise<StrategyResultResponse>;
 }

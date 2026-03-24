@@ -6,6 +6,8 @@ import InvestPage from "./pages/InvestPage";
 import LoginPage from "./pages/LoginPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import SignupPage from "./pages/SignupPage";
+import StrategyLoadingPage from "./pages/StrategyLoadingPage";
+import StrategyResultPage from "./pages/StrategyResultPage";
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
       <Route path="/signup" element={<SignupPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/strategy/loading" element={<StrategyLoadingPage />} />
+        <Route path="/strategy/result" element={<StrategyResultPage />} />
         <Route path="/app" element={<DashboardPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/invest" replace />} />

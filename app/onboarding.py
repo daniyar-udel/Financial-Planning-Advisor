@@ -4,8 +4,15 @@ from datetime import datetime, timezone
 
 from fastapi import HTTPException, status
 
+from app.advisor import build_advice
 from app.database import get_connection
-from app.schemas import OnboardingProfileRequest, OnboardingProfileResponse, UserResponse
+from app.schemas import (
+    OnboardingProfileRequest,
+    OnboardingProfileResponse,
+    StrategyResultResponse,
+    UserProfile,
+    UserResponse,
+)
 
 
 def save_onboarding_profile(
@@ -107,3 +114,34 @@ def get_onboarding_profile(user: UserResponse) -> OnboardingProfileResponse:
         )
 
     return OnboardingProfileResponse(**dict(row))
+
+
+def build_strategy_result(user: UserResponse) -> StrategyResultResponse:
+    onboarding_profile = get_onboarding_profile(user)
+    advisor_profile = UserProfile(
+        age=onboarding_profile.age,
+        annual_income=onboarding_profile.annual_income,
+        savings_rate=onboarding_profile.savings_rate,
+        current_savings=onboarding_profile.current_savings,
+        monthly_contribution=onboarding_profile.monthly_contribution,
+        goal_amount=onboarding_profile.goal_amount,
+        investment_horizon_years=onboarding_profile.investment_horizon_years,
+        risk_preference=onboarding_profile.risk_preference,
+    )
+    recommendation = build_advice(advisor_profile)
+
+    return StrategyResultResponse(
+        onboarding_profile=onboarding_profile,
+        recommendation=recommendation,
+        strategy_horizon_note=(
+            f"This strategy is designed for an approximately "
+            f"{onboarding_profile.investment_horizon_years}-year investing horizon."
+        ),
+        platform_notice=(
+            "You can use third-party brokerage or investment platforms to implement this strategy."
+        ),
+        disclaimer=(
+            "This portfolio is for educational purposes only, is not financial advice, "
+            "and you remain responsible for your own investment decisions."
+        ),
+    )

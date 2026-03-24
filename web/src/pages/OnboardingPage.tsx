@@ -71,7 +71,7 @@ export default function OnboardingPage() {
 
     try {
       await saveOnboardingProfile(token, profile);
-      navigate("/app");
+      navigate("/strategy/loading");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to save onboarding profile.");
     } finally {

@@ -107,3 +107,11 @@ export interface AdvisorResponse {
   simulation: SimulationSummary;
   explanation: string;
 }
+
+export interface StrategyResultResponse {
+  onboarding_profile: OnboardingProfileResponse;
+  recommendation: AdvisorResponse;
+  strategy_horizon_note: string;
+  platform_notice: string;
+  disclaimer: string;
+}

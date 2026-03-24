@@ -77,6 +77,14 @@ class OnboardingProfileResponse(OnboardingProfileRequest):
     user_id: int
 
 
+class StrategyResultResponse(BaseModel):
+    onboarding_profile: OnboardingProfileResponse
+    recommendation: "AdvisorResponse"
+    strategy_horizon_note: str
+    platform_notice: str
+    disclaimer: str
+
+
 class MarketSnapshot(BaseModel):
     regime: MarketRegime
     latest_close: float
@@ -118,3 +126,6 @@ class AdvisorResponse(BaseModel):
     recommended_strategy: AllocationSummary
     simulation: SimulationSummary
     explanation: str
+
+
+StrategyResultResponse.model_rebuild()
