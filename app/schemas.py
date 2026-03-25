@@ -15,6 +15,7 @@ GoalType = Literal[
 ]
 StressResponse = Literal["buy_more", "hold", "sell_some", "sell_all"]
 StrategyPreference = Literal["classic", "responsible", "income_focused"]
+AgentMessageRole = Literal["user", "assistant"]
 
 
 class UserProfile(BaseModel):
@@ -129,6 +130,24 @@ class AdvisorResponse(BaseModel):
     recommended_strategy: AllocationSummary
     simulation: SimulationSummary
     explanation: str
+
+
+class AgentChatMessage(BaseModel):
+    role: AgentMessageRole
+    content: str = Field(..., min_length=1, max_length=4_000)
+
+
+class AgentChatRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=4_000)
+    history: list[AgentChatMessage] = Field(default_factory=list, max_length=12)
+
+
+class AgentChatResponse(BaseModel):
+    reply: str
+    provider: str
+    model: str
+    fallback_used: bool
+    sample_prompts: list[str]
 
 
 StrategyResultResponse.model_rebuild()

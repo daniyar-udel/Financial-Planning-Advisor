@@ -1,4 +1,10 @@
+import os
 from dataclasses import dataclass, field
+
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 @dataclass(frozen=True)
@@ -14,6 +20,10 @@ class Settings:
     trading_days_per_year: int = 252
     market_symbol: str = "^GSPC"
     market_lookback_period: str = "5y"
+    groq_base_url: str = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
+    groq_model: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    groq_api_key: str | None = os.getenv("GROQ_API_KEY")
+    groq_timeout_seconds: float = 20.0
     regime_features: tuple[str, ...] = (
         "return_21d",
         "volatility_21d",

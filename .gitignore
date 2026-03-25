@@ -12,3 +12,5 @@ data/
 .coverage
 htmlcov/
 .DS_Store
+.env
+.env.local

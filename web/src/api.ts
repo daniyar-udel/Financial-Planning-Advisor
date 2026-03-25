@@ -1,4 +1,6 @@
 import type {
+  AgentChatMessage,
+  AgentChatResponse,
   AdvisorResponse,
   AuthResponse,
   LoginPayload,
@@ -132,4 +134,29 @@ export async function getStrategyResult(token: string): Promise<StrategyResultRe
   }
 
   return response.json() as Promise<StrategyResultResponse>;
+}
+
+export async function sendAgentMessage(
+  token: string,
+  message: string,
+  history: AgentChatMessage[],
+): Promise<AgentChatResponse> {
+  const response = await fetch(`${API_BASE_URL}/agent/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      message,
+      history,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    throw new Error(error?.detail ?? "Unable to contact the AI copilot.");
+  }
+
+  return response.json() as Promise<AgentChatResponse>;
 }

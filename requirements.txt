@@ -10,3 +10,9 @@ plotly==6.3.0
 streamlit==1.49.0
 PyJWT==2.10.1
 email-validator==2.3.0
+langchain>=0.3,<0.4
+langgraph>=0.2,<0.4
+langchain-groq>=0.2,<0.4
+langchain-chroma>=0.2,<0.3
+chromadb>=0.5,<1.1
+python-dotenv==1.0.1

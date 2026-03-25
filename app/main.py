@@ -1,11 +1,14 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.agent import chat_with_copilot
 from app.auth import get_current_user, login_user, register_user
 from app.advisor import build_advice
 from app.database import init_db
 from app.onboarding import build_strategy_result, get_onboarding_profile, save_onboarding_profile
 from app.schemas import (
+    AgentChatRequest,
+    AgentChatResponse,
     AdvisorResponse,
     LoginRequest,
     OnboardingProfileRequest,
@@ -83,6 +86,14 @@ def get_strategy_result(
     current_user: UserResponse = Depends(get_current_user),
 ) -> StrategyResultResponse:
     return build_strategy_result(current_user)
+
+
+@app.post("/agent/chat", response_model=AgentChatResponse)
+def agent_chat(
+    payload: AgentChatRequest,
+    current_user: UserResponse = Depends(get_current_user),
+) -> AgentChatResponse:
+    return chat_with_copilot(current_user, payload)
 
 
 @app.post("/advisor/plan", response_model=AdvisorResponse)

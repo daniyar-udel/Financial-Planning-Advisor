@@ -118,3 +118,18 @@ export interface StrategyResultResponse {
   platform_notice: string;
   disclaimer: string;
 }
+
+export type AgentMessageRole = "user" | "assistant";
+
+export interface AgentChatMessage {
+  role: AgentMessageRole;
+  content: string;
+}
+
+export interface AgentChatResponse {
+  reply: string;
+  provider: string;
+  model: string;
+  fallback_used: boolean;
+  sample_prompts: string[];
+}

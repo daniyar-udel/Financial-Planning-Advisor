@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 
 import { useAuth } from "../auth";
+import AICopilot from "./AICopilot";
 
 const appNavItems = [
   { to: "/app/overview", label: "Overview" },
@@ -51,6 +52,7 @@ export default function AppShell() {
       <section className="app-content">
         <Outlet />
       </section>
+      <AICopilot />
     </div>
   );
 }
