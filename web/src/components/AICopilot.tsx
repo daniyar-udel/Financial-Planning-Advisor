@@ -25,6 +25,8 @@ export default function AICopilot() {
   const [suggestedPrompts, setSuggestedPrompts] = useState(FALLBACK_PROMPTS);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [providerLabel, setProviderLabel] = useState("Ready");
+  const [providerTone, setProviderTone] = useState<"neutral" | "active" | "fallback">("neutral");
 
   const conversationHistory = useMemo(
     () => messages.filter((message) => message !== INITIAL_MESSAGE),
@@ -50,6 +52,13 @@ export default function AICopilot() {
     try {
       const response = await sendAgentMessage(token, content, conversationHistory);
       setSuggestedPrompts(response.sample_prompts);
+      if (response.fallback_used) {
+        setProviderLabel("Fallback mode");
+        setProviderTone("fallback");
+      } else {
+        setProviderLabel("Groq active");
+        setProviderTone("active");
+      }
       setMessages((current) => [
         ...current,
         {
@@ -71,7 +80,7 @@ export default function AICopilot() {
         className="copilot-trigger"
         onClick={() => setIsOpen((current) => !current)}
       >
-        {isOpen ? "Close AI" : "Ask AI"}
+        {isOpen ? "Close copilot" : "Ask AI"}
       </button>
 
       {isOpen ? (
@@ -80,6 +89,7 @@ export default function AICopilot() {
             <div>
               <span className="eyebrow">AI Copilot</span>
               <h3>Ask about your plan</h3>
+              <div className={`copilot-provider copilot-provider-${providerTone}`}>{providerLabel}</div>
             </div>
             <button
               type="button"
@@ -87,7 +97,7 @@ export default function AICopilot() {
               onClick={() => setIsOpen(false)}
               aria-label="Close AI copilot"
             >
-              ×
+              x
             </button>
           </div>
 

@@ -1,16 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { getOnboardingProfile, saveOnboardingProfile } from "../api";
 import { useAuth } from "../auth";
-import type { GoalType, OnboardingProfilePayload, RiskPreference, StrategyPreference, StressResponse } from "../types";
+import type {
+  GoalType,
+  OnboardingProfilePayload,
+  RiskPreference,
+  StrategyPreference,
+  StressResponse,
+} from "../types";
 
-const steps = [
-  "Goal",
-  "Personal",
-  "Financial",
-  "Risk",
-  "Review",
+const steps = ["Goal", "Personal", "Financial", "Risk", "Review"] as const;
+
+const stepMeta = [
+  {
+    title: "Define the destination",
+    description: "Start with the goal, target amount, and investing horizon.",
+  },
+  {
+    title: "Capture your planning profile",
+    description: "Add the personal context that frames the recommendation.",
+  },
+  {
+    title: "Understand your financial capacity",
+    description: "Income, savings, and contribution level set the realism of the plan.",
+  },
+  {
+    title: "Map risk and behavior",
+    description: "Risk preference and stress response shape the strategy band.",
+  },
+  {
+    title: "Review before strategy generation",
+    description: "Confirm the planning inputs before the portfolio is built.",
+  },
 ] as const;
 
 const defaultProfile: OnboardingProfilePayload = {
@@ -85,19 +108,27 @@ export default function OnboardingPage() {
 
   return (
     <div className="onboarding-shell">
+      <div className="brand-haze brand-haze-left" />
+      <div className="brand-haze brand-haze-right" />
       <section className="onboarding-card">
         <div className="onboarding-header">
           <div>
             <div className="eyebrow">Onboarding</div>
             <h1>Let&apos;s build your investment strategy, {user?.full_name.split(" ")[0]}.</h1>
             <p>
-              We&apos;ll ask a few questions about your goal, profile, finances, and
-              investing behavior before generating your strategy.
+              We&apos;ll move through a focused planning questionnaire so the recommendation
+              is built from your goal, finances, and investing behavior instead of guesswork.
             </p>
+            <div className="onboarding-lead">
+              <span>Current focus</span>
+              <strong>{stepMeta[stepIndex].title}</strong>
+              <p>{stepMeta[stepIndex].description}</p>
+            </div>
           </div>
           <div className="step-indicator">
             <span>Step {stepIndex + 1} of {steps.length}</span>
             <strong>{steps[stepIndex]}</strong>
+            <p>{stepMeta[stepIndex].description}</p>
           </div>
         </div>
 
@@ -114,183 +145,208 @@ export default function OnboardingPage() {
 
         <div className="onboarding-body">
           {stepIndex === 0 ? (
-            <div className="onboarding-grid">
-              <SelectField
-                label="What are you investing for?"
-                value={profile.goal_type}
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, goal_type: value as GoalType }))
-                }
-                options={[
-                  ["long_term_wealth", "Long-term wealth"],
-                  ["retirement", "Retirement"],
-                  ["home_purchase", "Home purchase"],
-                  ["financial_independence", "Financial independence"],
-                  ["custom_goal", "Custom goal"],
-                ]}
-              />
-              <NumberField
-                label="Target goal amount"
-                value={profile.goal_amount}
-                min={10000}
-                step={10000}
-                prefix="$"
-                onChange={(value) => setProfile((current) => ({ ...current, goal_amount: value }))}
-              />
-              <NumberField
-                label="Investment horizon"
-                value={profile.investment_horizon_years}
-                min={1}
-                max={50}
-                suffix="years"
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, investment_horizon_years: value }))
-                }
-              />
-            </div>
+            <QuestionCard
+              title="Start with the financial target"
+              description="These values define the destination your portfolio is being asked to support."
+            >
+              <div className="onboarding-grid">
+                <SelectField
+                  label="What are you investing for?"
+                  value={profile.goal_type}
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, goal_type: value as GoalType }))
+                  }
+                  options={[
+                    ["long_term_wealth", "Long-term wealth"],
+                    ["retirement", "Retirement"],
+                    ["home_purchase", "Home purchase"],
+                    ["financial_independence", "Financial independence"],
+                    ["custom_goal", "Custom goal"],
+                  ]}
+                />
+                <NumberField
+                  label="Target goal amount"
+                  value={profile.goal_amount}
+                  min={10000}
+                  step={10000}
+                  prefix="$"
+                  onChange={(value) => setProfile((current) => ({ ...current, goal_amount: value }))}
+                />
+                <NumberField
+                  label="Investment horizon"
+                  value={profile.investment_horizon_years}
+                  min={1}
+                  max={50}
+                  suffix="years"
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, investment_horizon_years: value }))
+                  }
+                />
+              </div>
+            </QuestionCard>
           ) : null}
 
           {stepIndex === 1 ? (
-            <div className="onboarding-grid">
-              <NumberField
-                label="Age"
-                value={profile.age}
-                min={18}
-                max={100}
-                onChange={(value) => setProfile((current) => ({ ...current, age: value }))}
-              />
-              <TextField
-                label="Date of birth"
-                type="date"
-                value={profile.date_of_birth}
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, date_of_birth: value }))
-                }
-              />
-              <SelectField
-                label="Marital status"
-                value={profile.marital_status}
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, marital_status: value }))
-                }
-                options={[
-                  ["single", "Single"],
-                  ["married", "Married"],
-                  ["partnered", "Partnered"],
-                ]}
-              />
-              <TextField
-                label="Address"
-                value={profile.address}
-                onChange={(value) => setProfile((current) => ({ ...current, address: value }))}
-              />
-            </div>
+            <QuestionCard
+              title="Add your personal planning context"
+              description="These details help the profile feel closer to a real planning workflow."
+            >
+              <div className="onboarding-grid">
+                <NumberField
+                  label="Age"
+                  value={profile.age}
+                  min={18}
+                  max={100}
+                  onChange={(value) => setProfile((current) => ({ ...current, age: value }))}
+                />
+                <TextField
+                  label="Date of birth"
+                  type="date"
+                  value={profile.date_of_birth}
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, date_of_birth: value }))
+                  }
+                />
+                <SelectField
+                  label="Marital status"
+                  value={profile.marital_status}
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, marital_status: value }))
+                  }
+                  options={[
+                    ["single", "Single"],
+                    ["married", "Married"],
+                    ["partnered", "Partnered"],
+                  ]}
+                />
+                <TextField
+                  label="Address"
+                  value={profile.address}
+                  onChange={(value) => setProfile((current) => ({ ...current, address: value }))}
+                />
+              </div>
+            </QuestionCard>
           ) : null}
 
           {stepIndex === 2 ? (
-            <div className="onboarding-grid">
-              <NumberField
-                label="Annual income"
-                value={profile.annual_income}
-                min={10000}
-                step={5000}
-                prefix="$"
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, annual_income: value }))
-                }
-              />
-              <NumberField
-                label="Current savings"
-                value={profile.current_savings}
-                min={0}
-                step={5000}
-                prefix="$"
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, current_savings: value }))
-                }
-              />
-              <NumberField
-                label="Monthly contribution"
-                value={profile.monthly_contribution}
-                min={0}
-                step={100}
-                prefix="$"
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, monthly_contribution: value }))
-                }
-              />
-              <NumberField
-                label="Savings rate"
-                value={profile.savings_rate * 100}
-                min={0}
-                max={50}
-                suffix="%"
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, savings_rate: value / 100 }))
-                }
-              />
-            </div>
+            <QuestionCard
+              title="Show how much capacity the plan has"
+              description="These inputs drive how realistic your goal probability is likely to be."
+            >
+              <div className="onboarding-grid">
+                <NumberField
+                  label="Annual income"
+                  value={profile.annual_income}
+                  min={10000}
+                  step={5000}
+                  prefix="$"
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, annual_income: value }))
+                  }
+                />
+                <NumberField
+                  label="Current savings"
+                  value={profile.current_savings}
+                  min={0}
+                  step={5000}
+                  prefix="$"
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, current_savings: value }))
+                  }
+                />
+                <NumberField
+                  label="Monthly contribution"
+                  value={profile.monthly_contribution}
+                  min={0}
+                  step={100}
+                  prefix="$"
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, monthly_contribution: value }))
+                  }
+                />
+                <NumberField
+                  label="Savings rate"
+                  value={profile.savings_rate * 100}
+                  min={0}
+                  max={50}
+                  suffix="%"
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, savings_rate: value / 100 }))
+                  }
+                />
+              </div>
+            </QuestionCard>
           ) : null}
 
           {stepIndex === 3 ? (
-            <div className="onboarding-grid">
-              <SelectField
-                label="Risk preference"
-                value={profile.risk_preference}
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, risk_preference: value as RiskPreference }))
-                }
-                options={[
-                  ["low", "Low"],
-                  ["medium", "Medium"],
-                  ["high", "High"],
-                ]}
-              />
-              <SelectField
-                label="If markets drop sharply, what would you do?"
-                value={profile.stress_response}
-                onChange={(value) =>
-                  setProfile((current) => ({ ...current, stress_response: value as StressResponse }))
-                }
-                options={[
-                  ["buy_more", "Buy more"],
-                  ["hold", "Hold steady"],
-                  ["sell_some", "Sell some"],
-                  ["sell_all", "Sell all"],
-                ]}
-              />
-              <SelectField
-                label="Preferred strategy style"
-                value={profile.strategy_preference}
-                onChange={(value) =>
-                  setProfile((current) => ({
-                    ...current,
-                    strategy_preference: value as StrategyPreference,
-                  }))
-                }
-                options={[
-                  ["classic", "Classic"],
-                  ["responsible", "Responsible"],
-                  ["income_focused", "Income focused"],
-                ]}
-              />
-            </div>
+            <QuestionCard
+              title="Tell us how you behave under uncertainty"
+              description="This helps the recommendation balance growth potential with downside comfort."
+            >
+              <div className="onboarding-grid">
+                <SelectField
+                  label="Risk preference"
+                  value={profile.risk_preference}
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, risk_preference: value as RiskPreference }))
+                  }
+                  options={[
+                    ["low", "Low"],
+                    ["medium", "Medium"],
+                    ["high", "High"],
+                  ]}
+                />
+                <SelectField
+                  label="If markets drop sharply, what would you do?"
+                  value={profile.stress_response}
+                  onChange={(value) =>
+                    setProfile((current) => ({ ...current, stress_response: value as StressResponse }))
+                  }
+                  options={[
+                    ["buy_more", "Buy more"],
+                    ["hold", "Hold steady"],
+                    ["sell_some", "Sell some"],
+                    ["sell_all", "Sell all"],
+                  ]}
+                />
+                <SelectField
+                  label="Preferred strategy style"
+                  value={profile.strategy_preference}
+                  onChange={(value) =>
+                    setProfile((current) => ({
+                      ...current,
+                      strategy_preference: value as StrategyPreference,
+                    }))
+                  }
+                  options={[
+                    ["classic", "Classic"],
+                    ["responsible", "Responsible"],
+                    ["income_focused", "Income focused"],
+                  ]}
+                />
+              </div>
+            </QuestionCard>
           ) : null}
 
           {stepIndex === 4 ? (
-            <div className="review-grid">
-              <ReviewItem label="Goal" value={profile.goal_type.replace(/_/g, " ")} />
-              <ReviewItem label="Goal amount" value={`$${profile.goal_amount.toLocaleString()}`} />
-              <ReviewItem label="Horizon" value={`${profile.investment_horizon_years} years`} />
-              <ReviewItem label="Age" value={String(profile.age)} />
-              <ReviewItem label="Marital status" value={profile.marital_status} />
-              <ReviewItem label="Annual income" value={`$${profile.annual_income.toLocaleString()}`} />
-              <ReviewItem label="Current savings" value={`$${profile.current_savings.toLocaleString()}`} />
-              <ReviewItem label="Monthly contribution" value={`$${profile.monthly_contribution.toLocaleString()}`} />
-              <ReviewItem label="Risk preference" value={profile.risk_preference} />
-              <ReviewItem label="Stress response" value={profile.stress_response.replace(/_/g, " ")} />
-              <ReviewItem label="Strategy preference" value={profile.strategy_preference.replace(/_/g, " ")} />
-            </div>
+            <QuestionCard
+              title="Review before strategy generation"
+              description="Once this is confirmed, the product will build your portfolio recommendation."
+            >
+              <div className="review-grid">
+                <ReviewItem label="Goal" value={profile.goal_type.replace(/_/g, " ")} />
+                <ReviewItem label="Goal amount" value={`$${profile.goal_amount.toLocaleString()}`} />
+                <ReviewItem label="Horizon" value={`${profile.investment_horizon_years} years`} />
+                <ReviewItem label="Age" value={String(profile.age)} />
+                <ReviewItem label="Marital status" value={profile.marital_status} />
+                <ReviewItem label="Annual income" value={`$${profile.annual_income.toLocaleString()}`} />
+                <ReviewItem label="Current savings" value={`$${profile.current_savings.toLocaleString()}`} />
+                <ReviewItem label="Monthly contribution" value={`$${profile.monthly_contribution.toLocaleString()}`} />
+                <ReviewItem label="Risk preference" value={profile.risk_preference} />
+                <ReviewItem label="Stress response" value={profile.stress_response.replace(/_/g, " ")} />
+                <ReviewItem label="Strategy preference" value={profile.strategy_preference.replace(/_/g, " ")} />
+              </div>
+            </QuestionCard>
           ) : null}
         </div>
 
@@ -320,6 +376,18 @@ export default function OnboardingPage() {
           )}
         </div>
       </section>
+    </div>
+  );
+}
+
+function QuestionCard(props: { title: string; description: string; children: ReactNode }) {
+  return (
+    <div className="question-card">
+      <div className="section-heading">
+        <h2>{props.title}</h2>
+        <p>{props.description}</p>
+      </div>
+      {props.children}
     </div>
   );
 }

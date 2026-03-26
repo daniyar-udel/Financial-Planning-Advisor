@@ -36,7 +36,7 @@ export default function OverviewPage() {
           <div className="eyebrow">Overview</div>
           <h1>Your long-term strategy at a glance</h1>
           <p>
-            This overview summarizes your current market-aware plan, projected outcome,
+            This workspace summarizes your current market-aware plan, projected outcome,
             and what may still be missing by your target date.
           </p>
         </div>
@@ -56,7 +56,7 @@ export default function OverviewPage() {
         <section className="app-panel">
           <div className="section-heading">
             <h2>Key takeaways</h2>
-            <p>Important signals from your current plan.</p>
+            <p>The most important planning signals from your current recommendation.</p>
           </div>
           <div className="summary-stack">
             <SummaryBox label="What may still be missing by your target date">
@@ -76,7 +76,7 @@ export default function OverviewPage() {
         <section className="app-panel">
           <div className="section-heading">
             <h2>Advisor summary</h2>
-            <p>Plain-English explanation of the recommendation.</p>
+            <p>Why the current strategy fits the profile you provided.</p>
           </div>
           <p className="narrative-copy">{recommendation.explanation}</p>
           <p className="result-note">{result.strategy_horizon_note}</p>

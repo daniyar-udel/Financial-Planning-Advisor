@@ -41,6 +41,7 @@ export default function StrategyResultPage() {
   }
 
   const { recommendation, onboarding_profile: profile } = result;
+  const baseEntries = Object.entries(recommendation.base_strategy.allocation);
   const allocationEntries = Object.entries(recommendation.recommended_strategy.allocation);
   const simulation = recommendation.simulation;
   const accumulatedLabel = `$${simulation.median_terminal_value.toLocaleString()}`;
@@ -51,36 +52,38 @@ export default function StrategyResultPage() {
 
   return (
     <div className="result-shell">
+      <div className="brand-haze brand-haze-left" />
+      <div className="brand-haze brand-haze-right" />
       <section className="result-card">
         <div className="eyebrow">Your personalized portfolio is ready</div>
-        <h1>Based on your profile, we built a {recommendation.strategy_profile} strategy.</h1>
+        <h1>Based on your profile, we built a {recommendation.strategy_profile} long-term strategy.</h1>
         <p>
-          The portfolio below reflects your goal, risk preference, and the current market
-          regime. It is designed for a long-term horizon of about {profile.investment_horizon_years} years.
+          The portfolio below reflects your goal, risk preference, savings capacity, and
+          the current market regime. It is designed for a planning horizon of about{" "}
+          {profile.investment_horizon_years} years.
         </p>
 
         <div className="result-top-grid">
           <div className="result-hero-panel">
             <span>Goal probability</span>
             <strong>{Math.round(simulation.probability_of_reaching_goal * 100)}%</strong>
-            <p>chance of reaching your target under simulated market outcomes</p>
+            <p>chance of reaching your target under simulated long-term market outcomes</p>
           </div>
 
           <div className="result-summary-list">
-            <SummaryItem label="Portfolio type" value={profile.strategy_preference.replace(/_/g, " ")} />
+            <SummaryItem label="Portfolio style" value={profile.strategy_preference.replace(/_/g, " ")} />
+            <SummaryItem label="Strategy profile" value={recommendation.strategy_profile} />
             <SummaryItem label="Risk preference" value={profile.risk_preference} />
-            <SummaryItem label="Market regime" value={recommendation.market_regime.replace(/_/g, " ")} />
+            <SummaryItem label="Current market regime" value={recommendation.market_regime.replace(/_/g, " ")} />
             <SummaryItem label="What you'll likely accumulate" value={accumulatedLabel} />
+            <SummaryItem label="Selected horizon" value={`${profile.investment_horizon_years} years`} />
           </div>
         </div>
 
         <section className="result-section">
-          <h2>Goal feasibility</h2>
+          <h2>Goal feasibility at a glance</h2>
           <div className="result-feasibility-grid">
-            <SummaryItem
-              label="What you'll likely accumulate"
-              value={accumulatedLabel}
-            />
+            <SummaryItem label="What you'll likely accumulate" value={accumulatedLabel} />
             <SummaryItem label="What may still be missing by your target date" value={remainingLabel} />
             <SummaryItem
               label="To improve your odds, invest about"
@@ -92,23 +95,50 @@ export default function StrategyResultPage() {
             />
           </div>
           <p className="result-note">
-            These numbers are based on the median simulated outcome. If the projected amount is still below your target,
-            the remaining gap shows what may still be missing by your target date.
+            These figures are based on the median simulated outcome. If the projected amount
+            remains below your target, the remaining gap shows what may still be missing by
+            your target date.
           </p>
         </section>
 
         <section className="result-section">
-          <h2>Recommended allocation</h2>
-          <div className="result-allocation-list">
-            {allocationEntries.map(([asset, value]) => (
-              <div key={asset} className="result-allocation-row">
-                <div>
-                  <strong>{asset.replace(/_/g, " ")}</strong>
-                  <p>Market-aware asset class allocation</p>
-                </div>
-                <span>{Math.round(value * 100)}%</span>
+          <h2>From strategic base to live recommendation</h2>
+          <div className="result-strategy-grid">
+            <div className="result-strategy-column">
+              <div className="section-heading">
+                <h3>Base strategy</h3>
+                <p>Your long-term allocation before market regime adjustments.</p>
               </div>
-            ))}
+              <div className="result-allocation-list">
+                {baseEntries.map(([asset, value]) => (
+                  <div key={asset} className="result-allocation-row">
+                    <div>
+                      <strong>{asset.replace(/_/g, " ")}</strong>
+                      <p>Strategic allocation</p>
+                    </div>
+                    <span>{Math.round(value * 100)}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="result-strategy-column">
+              <div className="section-heading">
+                <h3>Market-aware recommendation</h3>
+                <p>Adjusted to reflect the current regime without breaking your overall risk band.</p>
+              </div>
+              <div className="result-allocation-list">
+                {allocationEntries.map(([asset, value]) => (
+                  <div key={asset} className="result-allocation-row">
+                    <div>
+                      <strong>{asset.replace(/_/g, " ")}</strong>
+                      <p>Recommended allocation now</p>
+                    </div>
+                    <span>{Math.round(value * 100)}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -122,7 +152,7 @@ export default function StrategyResultPage() {
 
         <div className="result-actions">
           <button className="primary-button slim-button" type="button" onClick={() => navigate("/app")}>
-            Confirm and continue
+            Enter workspace
           </button>
           <Link className="secondary-button link-button" to="/onboarding">
             Edit answers

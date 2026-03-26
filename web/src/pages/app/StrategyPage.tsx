@@ -11,8 +11,9 @@ export default function StrategyPage() {
     return <div className="route-loader">{error ?? "Strategy result not found."}</div>;
   }
 
-  const baseAllocation = Object.entries(result.recommendation.base_strategy.allocation);
-  const recommendedAllocation = Object.entries(result.recommendation.recommended_strategy.allocation);
+  const recommendation = result.recommendation;
+  const baseAllocation = Object.entries(recommendation.base_strategy.allocation);
+  const recommendedAllocation = Object.entries(recommendation.recommended_strategy.allocation);
 
   return (
     <div className="app-page">
@@ -25,6 +26,13 @@ export default function StrategyPage() {
           </p>
         </div>
       </header>
+
+      <div className="app-metric-grid">
+        <MetricCard label="Base expected return" value={`${Math.round(recommendation.base_strategy.expected_annual_return * 100)}%`} />
+        <MetricCard label="Base volatility" value={`${Math.round(recommendation.base_strategy.annual_volatility * 100)}%`} />
+        <MetricCard label="Recommended return" value={`${Math.round(recommendation.recommended_strategy.expected_annual_return * 100)}%`} />
+        <MetricCard label="Recommended volatility" value={`${Math.round(recommendation.recommended_strategy.annual_volatility * 100)}%`} />
+      </div>
 
       <div className="app-two-column">
         <section className="app-panel">
@@ -57,6 +65,15 @@ export default function StrategyPage() {
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+function MetricCard(props: { label: string; value: string }) {
+  return (
+    <div className="metric-card">
+      <span>{props.label}</span>
+      <strong>{props.value}</strong>
     </div>
   );
 }

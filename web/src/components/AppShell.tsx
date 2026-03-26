@@ -16,11 +16,12 @@ export default function AppShell() {
   return (
     <div className="app-shell">
       <aside className="app-sidebar">
-        <div>
-          <div className="eyebrow">Private Area</div>
+        <div className="app-sidebar-top">
+          <div className="eyebrow">Private workspace</div>
           <h2>AI Investment Strategy Advisor</h2>
           <p>
-            Your post-onboarding workspace for reviewing strategy, simulations, and profile data.
+            Review your strategy, inspect simulated outcomes, and use the AI copilot to
+            understand how the plan behaves.
           </p>
         </div>
 
@@ -36,10 +37,16 @@ export default function AppShell() {
           ))}
         </nav>
 
+        <div className="app-side-note">
+          <span className="eyebrow">Copilot inside</span>
+          <strong>Ask AI about allocation, market regime, and what-if scenarios.</strong>
+          <p>The assistant is available across the private workspace.</p>
+        </div>
+
         <div className="app-sidebar-footer">
           <p>{user?.full_name}</p>
           <div className="app-shell-actions">
-            <Link className="secondary-button link-button" to="/invest">
+            <Link className="ghost-button link-button" to="/invest">
               Public page
             </Link>
             <button className="primary-button slim-button" onClick={logoutUser} type="button">
