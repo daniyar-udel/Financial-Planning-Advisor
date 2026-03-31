@@ -31,7 +31,7 @@ Given a user's **age, income, savings, risk tolerance, and financial goal**, the
 
 > 🔗 [vivacious-imagination-production-f472.up.railway.app](https://vivacious-imagination-production-f472.up.railway.app)
 
-![App Screenshot](screenshot.png)
+![App Screenshot](screenshot.PNG)
 
 ---
 
