@@ -41,14 +41,15 @@ Given a user's **age, income, savings, risk tolerance, and financial goal**, the
 ```json
 {
   "strategy_profile": "moderate",
-  "market_regime": "high_volatility",
+  "market_regime": "bear",
   "recommended_strategy": {
-    "stocks": 0.5,
-    "bonds": 0.4,
-    "reits": 0.1
+    "stocks": 0.4,
+    "bonds": 0.45,
+    "reits": 0.1,
+    "gold": 0.05
   },
-  "probability_of_reaching_goal": 0.72,
-  "median_terminal_value": 541823.50,
+  "probability_of_reaching_goal": 0.35,
+  "median_terminal_value": 409559.00,
   "explanation": "Given current high-volatility conditions, your moderate strategy has been adjusted..."
 }
 ```
@@ -157,7 +158,7 @@ Interactive docs available at `/docs` after starting the server.
 ### 1. Clone & set up environment
 
 ```bash
-git clone https://github.com/your-username/financial-assistant.git
+git clone https://github.com/daniyar-udel/Financial-Planning-Advisor.git
 cd financial-assistant
 python -m venv .venv
 # Windows:
