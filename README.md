@@ -29,7 +29,7 @@ Given a user's **age, income, savings, risk tolerance, and financial goal**, the
 
 ## Live Demo
 
-> 🔗 [financial-advisor.up.railway.app](https://financial-advisor.up.railway.app)
+> 🔗 [vivacious-imagination-production-f472.up.railway.app](https://vivacious-imagination-production-f472.up.railway.app)
 
 ---
 
