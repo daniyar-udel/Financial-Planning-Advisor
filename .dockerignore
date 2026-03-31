@@ -12,6 +12,6 @@ web/
 tests/
 docs/
 dashboard.py
-*.md
+README.md
 .git/
 .gitignore
