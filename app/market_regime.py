@@ -7,19 +7,25 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
 from app.config import settings
+from app.logger import get_logger
 from app.schemas import MarketSnapshot
+
+log = get_logger(__name__)
 
 
 def detect_market_regime(symbol: str | None = None, period: str | None = None) -> MarketSnapshot:
     symbol = symbol or settings.market_symbol
     period = period or settings.market_lookback_period
 
+    log.info("Fetching market data: symbol=%s period=%s", symbol, period)
     try:
         history = yf.download(symbol, period=period, auto_adjust=True, progress=False)
-    except Exception:
+    except Exception as exc:
+        log.error("Failed to download market data: %s — using fallback snapshot", exc)
         history = pd.DataFrame()
 
     if history.empty:
+        log.warning("Market data is empty — using fallback snapshot")
         return _fallback_snapshot()
 
     features = _build_features(history)

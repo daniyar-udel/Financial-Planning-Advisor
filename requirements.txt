@@ -16,3 +16,5 @@ langchain-groq>=0.2,<0.4
 langchain-chroma>=0.2,<0.3
 chromadb>=0.5,<1.1
 python-dotenv==1.0.1
+slowapi>=0.1.9
+pytest>=8.0

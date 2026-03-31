@@ -2,13 +2,19 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import os
 import secrets
 from datetime import datetime, timedelta, timezone
 
 import jwt
+from dotenv import load_dotenv
 
+load_dotenv()
 
-JWT_SECRET = "change-this-secret-in-production"
+JWT_SECRET = os.environ.get("JWT_SECRET")
+if not JWT_SECRET:
+    raise RuntimeError("JWT_SECRET environment variable is not set")
+
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 12
 

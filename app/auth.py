@@ -7,9 +7,11 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.database import get_connection
+from app.logger import get_logger
 from app.schemas import LoginRequest, SignupRequest, TokenResponse, UserResponse
 from app.security import create_access_token, decode_access_token, hash_password, verify_password
 
+log = get_logger(__name__)
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -21,6 +23,7 @@ def register_user(payload: SignupRequest) -> TokenResponse:
             (payload.email.lower(),),
         ).fetchone()
         if existing:
+            log.warning("Signup attempt for already-registered email: %s", payload.email.lower())
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="An account with this email already exists.",
@@ -40,6 +43,7 @@ def register_user(payload: SignupRequest) -> TokenResponse:
         )
         user_id = int(cursor.lastrowid)
 
+    log.info("New user registered: id=%d email=%s", user_id, payload.email.lower())
     token = create_access_token(user_id, payload.email.lower())
     return TokenResponse(
         access_token=token,
@@ -55,11 +59,13 @@ def login_user(payload: LoginRequest) -> TokenResponse:
         ).fetchone()
 
     if not user or not verify_password(payload.password, user["password_hash"]):
+        log.warning("Failed login attempt for email: %s", payload.email.lower())
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
         )
 
+    log.info("User logged in: id=%d email=%s", int(user["id"]), str(user["email"]))
     token = create_access_token(int(user["id"]), str(user["email"]))
     return TokenResponse(
         access_token=token,

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import os
 import sqlite3
 from pathlib import Path
 
 
-DATA_DIR = Path("data")
-DB_PATH = DATA_DIR / "app.db"
+_db_path_env = os.getenv("DATABASE_PATH")
+DB_PATH = Path(_db_path_env) if _db_path_env else Path("data") / "app.db"
+DATA_DIR = DB_PATH.parent
 
 
 def get_connection() -> sqlite3.Connection:

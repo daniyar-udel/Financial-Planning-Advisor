@@ -1,263 +1,232 @@
 # AI Investment Strategy Advisor
 
-An AI-powered investment planning system that helps users turn a financial goal into a realistic long-term portfolio strategy.
+> A full-stack, market-aware investment planning system powered by ML and LLMs.
 
-Instead of predicting random stock prices, the system focuses on a more practical problem: how a user should invest based on income, savings behavior, risk preference, time horizon, and current market conditions.
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?logo=fastapi)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)
+![Tests](https://img.shields.io/badge/tests-44%20passed-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## Recruiter Snapshot
+---
 
-This project is designed to showcase:
+## What It Does
 
-- applied AI/ML thinking for market-aware strategy generation
-- probabilistic financial modeling with Monte Carlo simulation
-- production-style backend engineering with FastAPI
-- product thinking for a realistic fintech AI use case
-- clear separation between financial logic, ML logic, and explanation layer
+Most portfolio projects are either a toy ML notebook or a simple chatbot wrapper. This one is different.
 
-If you review only one part of this repository, start with the architecture and example API flow below.
+Given a user's **age, income, savings, risk tolerance, and financial goal**, the system:
 
-## Why This Project
+1. Classifies their **risk profile** (conservative / moderate / aggressive)
+2. Builds a **base portfolio allocation** (stocks / bonds / REITs / alternatives)
+3. Downloads real market data and detects the current **market regime** via KMeans clustering
+4. **Adapts the allocation** based on whether the market is bull, bear, sideways, or high-volatility
+5. Runs **10,000 Monte Carlo simulations** to estimate goal-achievement probability
+6. Generates a **plain-English explanation** of the full recommendation
+7. Lets the user ask follow-up questions via an **AI copilot** (LangGraph + Groq)
 
-Most portfolio projects stop at either:
+---
 
-- a toy ML notebook
-- a simple chatbot wrapper
-- a stock-price prediction demo with weak product value
+## Live Demo
 
-This project is intentionally different. It is built as a realistic AI/ML system:
+> 🔗 [financial-advisor.up.railway.app](https://financial-advisor.up.railway.app)
 
-- user financial profile intake
-- goal-based portfolio construction
-- market regime detection
-- adaptive asset allocation
-- Monte Carlo portfolio simulation
-- goal-achievement probability estimation
-- plain-English recommendation generation
+---
 
-The goal is to demonstrate applied machine learning, financial modeling, backend engineering, and product thinking in one end-to-end system.
+## Example
 
-## Product Vision
+**User:** Age 28, $90K income, $15K savings, $800/month contribution, goal $500K in 25 years, medium risk.
 
-The user enters:
-
-- age
-- income
-- current savings
-- savings rate
-- monthly contribution
-- target financial goal
-- investment horizon
-- risk preference
-
-The system then:
-
-- interprets the user's goals and risk preference
-- generates a base portfolio strategy
-- detects the current market regime
-- adjusts allocation to reflect market conditions
-- runs Monte Carlo simulations
-- estimates probability of reaching the target
-- explains the recommendation in plain English
-
-This is closer to a lightweight robo-advisor MVP than a generic finance chatbot.
-
-## V1 Scope
-
-The MVP focuses on:
-
-- collecting a user financial profile
-- assigning a risk profile
-- generating a base portfolio allocation
-- detecting the current market regime from market data
-- adjusting the allocation based on that regime
-- estimating the probability of reaching a financial goal
-- returning a clear explanation suitable for a financial planning assistant
-
-## Why This Is Strong For ML Roles
-
-This repository demonstrates:
-
-- `ML thinking`: regime analysis and probabilistic simulation
-- `system design`: modular services instead of one notebook
-- `domain knowledge`: portfolio allocation, risk, regime-based adaptation
-- `backend skills`: API design, schemas, orchestration layer
-- `product sense`: user-centric output, interpretability, realistic use case
-
-For ML Engineer or Applied AI roles, this is much closer to production work than classic beginner portfolio projects.
-
-## Example User Question
-
-> I am 28, earn $90,000 per year, have $15,000 in savings, can invest $800 per month, and want to reach $500,000 in 25 years. What strategy should I follow?
-
-## Example Outcome
-
-The system returns:
-
-- `risk_profile`: moderate
-- `market_regime`: high_volatility
-- `base_portfolio`: 60% stocks / 30% bonds / 10% REITs
-- `adjusted_portfolio`: more defensive allocation
-- `goal_probability`: probability of reaching the target under simulated market paths
-- `explanation`: plain-English summary of why the strategy fits the user
-
-## System Design
-
-```text
-User Profile
-    -> Risk Profiling
-    -> Base Portfolio Allocation
-    -> Market Regime Detection
-    -> Adaptive Allocation
-    -> Monte Carlo Simulation
-    -> Goal Probability Estimation
-    -> Natural-Language Recommendation
-```
-
-## Architecture Overview
-
-```text
-app/
-  main.py             FastAPI entrypoint
-  schemas.py          request/response models
-  advisor.py          orchestration layer
-  risk_profile.py     user risk classification
-  portfolio.py        base and adaptive allocation logic
-  market_regime.py    market regime detection
-  monte_carlo.py      goal probability simulation
-  explanation.py      recommendation narrative
-  config.py           portfolio assumptions and settings
-```
-
-## ML Components
-
-### 1. Risk Profiling
-
-The current MVP uses interpretable portfolio logic driven by the user's financial profile, goal, and risk preference.
-
-This keeps the first version product-focused and explainable, while leaving room for more advanced ML components later.
-
-### 2. Market Regime Detection
-
-The system uses historical market data and features such as:
-
-- rolling returns
-- rolling volatility
-- momentum
-- drawdown
-
-It then applies clustering to identify regimes such as:
-
-- bull
-- bear
-- sideways
-- high volatility
-
-### 3. Monte Carlo Simulation
-
-The simulation engine estimates the probability of reaching a long-term financial goal under many possible return paths.
-
-This moves the project beyond fixed deterministic calculators and introduces realistic uncertainty into planning outcomes.
-
-## Tech Stack
-
-- Python
-- FastAPI
-- pandas
-- numpy
-- scikit-learn
-- yfinance
-- plotly
-
-## API Output
-
-The API returns:
-
-- user risk profile
-- base portfolio allocation
-- current market regime
-- adjusted allocation
-- goal achievement probability
-- projected portfolio value
-- scenario summary
-- plain-English explanation
-
-## Demo Flow
-
-The ideal demo flow for this project is:
-
-1. user enters a profile and goal
-2. API returns a personalized investment plan
-3. dashboard shows portfolio allocation, market regime, and goal probability
-4. user sees a plain-English explanation of the recommendation
-
-This is the flow the repository is being built around.
-
-## Quick Start
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-Open the interactive API docs at `http://127.0.0.1:8000/docs`.
-
-To run the dashboard:
-
-```bash
-streamlit run dashboard.py
-```
-
-## Example Request
-
+**System response:**
 ```json
 {
-  "age": 28,
-  "annual_income": 90000,
-  "savings_rate": 0.15,
-  "current_savings": 15000,
-  "monthly_contribution": 800,
-  "goal_amount": 500000,
-  "investment_horizon_years": 25,
-  "risk_preference": "medium"
+  "strategy_profile": "moderate",
+  "market_regime": "high_volatility",
+  "recommended_strategy": {
+    "stocks": 0.5,
+    "bonds": 0.4,
+    "reits": 0.1
+  },
+  "probability_of_reaching_goal": 0.72,
+  "median_terminal_value": 541823.50,
+  "explanation": "Given current high-volatility conditions, your moderate strategy has been adjusted..."
 }
 ```
 
-## Example Endpoint
+---
 
-```bash
-curl -X POST "http://127.0.0.1:8000/advisor/plan" ^
-  -H "Content-Type: application/json" ^
-  -d "{\"age\":28,\"annual_income\":90000,\"savings_rate\":0.15,\"current_savings\":15000,\"monthly_contribution\":800,\"goal_amount\":500000,\"investment_horizon_years\":25,\"risk_preference\":\"medium\"}"
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Python 3.12, FastAPI, Uvicorn |
+| Data / ML | pandas, numpy, scikit-learn (KMeans), yfinance |
+| Simulation | NumPy Monte Carlo (10K paths) |
+| AI Copilot | LangGraph, LangChain, Groq (llama-3.3-70b) |
+| Auth | JWT (PyJWT), PBKDF2 password hashing |
+| Database | SQLite |
+| Frontend | React 18, TypeScript, Vite, Recharts |
+| Rate Limiting | slowapi |
+
+---
+
+## Architecture
+
+```
+User Profile
+    ↓
+Risk Profiling          → conservative / moderate / aggressive
+    ↓
+Base Allocation         → stocks / bonds / REITs / alternatives
+    ↓
+Market Regime           → KMeans on 5y of S&P 500 features
+    ↓
+Adaptive Allocation     → adjust weights by regime
+    ↓
+Monte Carlo (10K runs)  → probability of reaching goal
+    ↓
+AI Explanation          → plain-English recommendation
+    ↓
+AI Copilot              → LangGraph + Groq for follow-up Q&A
 ```
 
-## What This Project Signals
+---
 
-This project is intentionally designed to be portfolio-grade:
+## Project Structure
 
-- combines finance domain knowledge with ML/AI
-- shows system design instead of isolated notebooks
-- demonstrates reasoning about uncertainty, risk, and outcomes
-- can be extended into a full product with dashboarding and user sessions
+```
+financial-assistant/
+├── app/
+│   ├── main.py             # FastAPI app, routes, rate limiting
+│   ├── advisor.py          # Orchestration layer
+│   ├── risk_profile.py     # Risk classification
+│   ├── portfolio.py        # Base & adaptive allocation
+│   ├── market_regime.py    # KMeans market regime detection
+│   ├── monte_carlo.py      # Goal probability simulation
+│   ├── explanation.py      # Natural-language recommendation
+│   ├── agent.py            # LangGraph + Groq AI copilot
+│   ├── auth.py             # JWT authentication
+│   ├── security.py         # Password hashing, token encoding
+│   ├── onboarding.py       # User profile persistence
+│   ├── database.py         # SQLite connection & schema
+│   ├── logger.py           # Centralized logging
+│   ├── schemas.py          # Pydantic request/response models
+│   └── config.py           # Portfolio presets & settings
+├── web/                    # React + TypeScript frontend (Vite)
+│   └── src/
+│       ├── pages/          # Login, Signup, Onboarding, Strategy, Simulation
+│       └── components/     # AICopilot chat widget
+├── tests/
+│   ├── test_risk_profile.py
+│   ├── test_monte_carlo.py
+│   ├── test_portfolio.py
+│   └── test_market_regime.py
+├── .env.example            # Environment variable template
+├── requirements.txt
+└── dashboard.py            # Streamlit demo (alternative UI)
+```
 
-## Planned Demo Assets
+---
 
-To make the project recruiter-friendly, the next steps are:
+## API Endpoints
 
-- add a dashboard UI
-- add screenshots and a short demo GIF
-- add one or two polished example scenarios
-- add charts for allocation and projected goal outcomes
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| POST | `/auth/signup` | — | Register new user |
+| POST | `/auth/login` | — | Login, get JWT token |
+| GET | `/auth/me` | JWT | Get current user |
+| POST | `/onboarding/profile` | JWT | Save financial profile |
+| GET | `/onboarding/profile` | JWT | Load saved profile |
+| GET | `/strategy/result` | JWT | Generate full strategy |
+| POST | `/agent/chat` | JWT | Chat with AI copilot |
+| POST | `/advisor/plan` | — | One-shot strategy (no auth) |
+| GET | `/health` | — | Health check |
+
+Interactive docs available at `/docs` after starting the server.
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.12+
+- Node.js 18+ (for the React frontend)
+- A free [Groq API key](https://console.groq.com)
+
+### 1. Clone & set up environment
+
+```bash
+git clone https://github.com/your-username/financial-assistant.git
+cd financial-assistant
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Configure environment variables
+
+```bash
+cp .env.example .env
+# Edit .env and fill in your GROQ_API_KEY and JWT_SECRET
+```
+
+Generate a secure JWT secret:
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### 3. Run the backend
+
+```bash
+uvicorn app.main:app --reload
+# API docs → http://127.0.0.1:8000/docs
+```
+
+### 4. Run the frontend
+
+```bash
+cd web
+npm install
+npm run dev
+# App → http://localhost:5173
+```
+
+### 5. Run tests
+
+```bash
+pytest tests/ -v
+```
+
+---
+
+## What This Demonstrates
+
+| Skill | Evidence |
+|---|---|
+| ML thinking | KMeans regime detection, probabilistic Monte Carlo |
+| System design | Modular pipeline: risk → portfolio → regime → simulation → explanation |
+| Backend engineering | FastAPI, JWT auth, rate limiting, structured logging, SQLite |
+| AI integration | LangGraph agent, Groq LLM, RAG-ready with ChromaDB |
+| Frontend | React 18, TypeScript, Recharts, protected routes |
+| Code quality | Pydantic validation, type hints throughout, 44 passing tests |
+| Security | PBKDF2 hashing, JWT tokens, env-based secrets |
+
+---
 
 ## Future Improvements
 
-- train a supervised risk profiling model
-- add macroeconomic features to market regime detection
-- support ETF-level recommendations
-- add stress testing and rebalancing suggestions
-- build an interactive frontend dashboard
+- [ ] Train a supervised risk profiling model on historical investor data
+- [ ] Add macroeconomic features to market regime detection (CPI, yield curve)
+- [ ] Support ETF-level portfolio recommendations
+- [ ] Add stress testing and rebalancing simulation
+- [ ] Portfolio comparison across multiple strategies
+
+---
 
 ## Disclaimer
 
-This project is for educational and portfolio purposes only and does not provide financial advice.
+This project is for educational and portfolio purposes only. It does not constitute financial advice.

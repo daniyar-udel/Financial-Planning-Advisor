@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: financial-assistant-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: GROQ_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        sync: false
